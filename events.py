@@ -2,7 +2,7 @@ import asyncio
 import logging
 import os
 from datetime import datetime
-
+import traceback
 from dotenv import load_dotenv
 
 from client import DiscordClient
@@ -14,13 +14,40 @@ from embed import create_package_embeds
 
 
 class ParcelChecking:
+    _instance = None
+
     def __init__(self):
         self.enabled_services = [Service.CORREIOS]
 
         load_dotenv()
         self.minutes_delay = int(os.getenv("UPDATE_DELAY_MINUTES"))
+        self.looping = False
+
+    @classmethod
+    def instance(cls):
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
+
+    async def start_loop(self):
+        if self.looping:
+            logging.warning("Tried starting loop with one already running.")
+            return
+
+        while True:
+            try:
+                await self.main_loop()
+            except Exception as e:
+                self.looping = False
+                logging.error("Caught an Exception during the ParcelChecking loop.")
+                logging.error(traceback.format_exc())
 
     async def main_loop(self):
+        if self.looping:
+            logging.warning("Tried starting loop with one already running.")
+            return
+
+        self.looping = True
         remaining_time = 60 * self.minutes_delay
         logging.info(f"Parcel auto-check will start in {remaining_time} seconds.")
         while True:
