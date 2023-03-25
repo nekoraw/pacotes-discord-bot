@@ -130,9 +130,14 @@ async def get_all_parcels_embeds(us: User, ctx: discord.ApplicationContext):
     n_pages = math.ceil(len(us.parcels.items()) / parcels_per_page)
     list_pages = []
     for page in range(n_pages):
+        username = ""
+        if hasattr(ctx.user, "nick"):
+            username = ctx.user.nick
+        elif hasattr(ctx.user, "name"):
+            username = ctx.user.name
         embed = discord.Embed(
             color=discord.Color.from_rgb(255, 212, 0),
-            title=f"Encomendas de {ctx.user.nick if ctx.user.nick is not None else ctx.user.name}",
+            title=f"Encomendas de {username}",
         )
 
         embed.set_thumbnail(url=ctx.user.avatar.url)
