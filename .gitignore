@@ -1,0 +1,10 @@
+logs
+logs/*
+pacotes
+pacotes/*
+emojis.json
+.env
+__pycache__
+__pycache__/*
+.idea
+.idea/*
