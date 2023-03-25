@@ -74,7 +74,7 @@ async def on_guild_join(guild: discord.Guild) -> None:
                 )
 
 
-@client.slash_command(description="Define o canal atual como o canal de atualização de pacotes.")
+@client.slash_command(description="Define o canal atual como o canal de atualização de pacotes.", guild_only=True)
 @discord.default_permissions(administrator=True)
 async def canal_de_pacotes(ctx: discord.ApplicationContext):
     await ctx.defer()
@@ -229,7 +229,8 @@ async def remove(ctx: discord.ApplicationContext, nome):
 
 
 @client.slash_command(
-    description="Adiciona esse servidor à lista de servidores em que você quer receber atualização de pacotes."
+    description="Adiciona esse servidor à lista de servidores em que você quer receber atualização de pacotes.",
+    guild_only=True,
 )
 async def me_atualize_aqui(ctx: discord.ApplicationContext):
     us = await User.get_user(ctx.user.id)
@@ -247,7 +248,8 @@ async def me_atualize_aqui(ctx: discord.ApplicationContext):
 
 
 @client.slash_command(
-    description="Remove esse servidor da lista de servidores em que você quer receber atualização de pacotes."
+    description="Remove esse servidor da lista de servidores em que você quer receber atualização de pacotes.",
+    guild_only=True,
 )
 async def nao_me_atualize_aqui(ctx: discord.ApplicationContext):
     us = await User.get_user(ctx.user.id)
@@ -263,7 +265,8 @@ async def nao_me_atualize_aqui(ctx: discord.ApplicationContext):
 
 
 @client.slash_command(
-    description="Faz com que as mensagens do bot contenham os seus códigos de rastreio visível a todos."
+    description="Faz com que as mensagens do bot contenham os seus códigos de rastreio visível a todos.",
+    guild_only=True,
 )
 async def mostrar_codigo_rastreio(ctx: discord.ApplicationContext):
     us = await User.get_user(ctx.user.id)
@@ -278,7 +281,9 @@ async def mostrar_codigo_rastreio(ctx: discord.ApplicationContext):
     await ctx.respond("O seu código de rastreio agora é sempre visível em mensagens do bot.")
 
 
-@client.slash_command(description="Faz com que as mensagens do bot não mostrem os seus códigos de rastreio.")
+@client.slash_command(
+    description="Faz com que as mensagens do bot não mostrem os seus códigos de rastreio.", guild_only=True
+)
 async def nao_mostrar_codigo_rastreio(ctx: discord.ApplicationContext):
     us = await User.get_user(ctx.user.id)
     await ctx.defer(ephemeral=True)
