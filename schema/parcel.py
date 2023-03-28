@@ -20,6 +20,9 @@ class Parcel(Document):
 
     async def update_and_notify(self):
         logging.debug(f"Updating parcel {self.tracking_code.upper()}.")
+        if self.is_delivered:
+            logging.debug(f"No need to update {self.tracking_code.upper()} because it's delivered.")
+            return
         from events import notify_users
 
         n_updates_before = self.n_updates
