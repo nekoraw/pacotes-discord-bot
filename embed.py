@@ -17,8 +17,10 @@ load_dotenv()
 parcels_per_page = int(os.getenv("PARCELS_PER_PAGE"))
 updates_per_page = int(os.getenv("UPDATES_PER_PAGE"))
 
-with open("emojis.json", "r") as f:
-    all_emojis = json.load(f)
+all_emojis = {}
+if os.path.exists("./emojis.json"):
+    with open("emojis.json", "r") as f:
+        all_emojis = json.load(f)
 
 
 def parse_correios_evento(event: dict):
@@ -130,11 +132,16 @@ async def get_all_parcels_embeds(us: User, ctx: discord.ApplicationContext):
     n_pages = math.ceil(len(us.parcels.items()) / parcels_per_page)
     list_pages = []
     for page in range(n_pages):
-        username = ""
+        possible_names = []
+        if hasattr(ctx.user, "name"):
+            possible_names.append(ctx.user.name)
         if hasattr(ctx.user, "nick"):
-            username = ctx.user.nick
-        elif hasattr(ctx.user, "name"):
-            username = ctx.user.name
+            possible_names.append(ctx.user.nick)
+        username = "Usuário"
+        for name in possible_names:
+            if name is not None:
+                username = name
+                break
         embed = discord.Embed(
             color=discord.Color.from_rgb(255, 212, 0),
             title=f"Encomendas de {username}",
