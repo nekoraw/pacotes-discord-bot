@@ -61,8 +61,10 @@ class Parcel(Document):
                     ).first_or_none()
                 if result is None:
                     delivered = False
+                    n_updates = 0
                     if package is not None:
                         if "eventos" in package:
+                            n_updates = len(package["eventos"])
                             if "Objeto entregue ao destinatário".lower() in package["eventos"][0]["descricao"].lower():
                                 delivered = True
                     result = Parcel(
@@ -72,6 +74,7 @@ class Parcel(Document):
                         data=package,
                         last_update=(datetime.utcnow() - timedelta(hours=3)).isoformat(),
                         is_delivered=delivered,
+                        n_updates=n_updates
                     )
                 return result
             case _:
