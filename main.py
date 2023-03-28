@@ -129,7 +129,9 @@ async def rastreia(ctx: discord.ApplicationContext, nome, codigo, visivel):
         service = get_service_from_tracking_number(codigo)
         rastreio = await Parcel.update_parcel_without_save(service, codigo)
         embeds = create_package_embeds(rastreio, show_tracking_number=True)
-        if len(embeds) == 1:
+        if len(embeds) == 0:
+            await ctx.respond(content="Nenhum dado? Que estranho.")
+        elif len(embeds) == 1:
             await ctx.respond(embed=embeds[0])
         else:
             paginator = pages.Paginator(
@@ -139,7 +141,9 @@ async def rastreia(ctx: discord.ApplicationContext, nome, codigo, visivel):
     elif nome:
         package = await Parcel.find(Parcel.internal_id == us.parcels[nome]).first_or_none()
         embeds = create_package_embeds(package, show_tracking_number=True)
-        if len(embeds) == 1:
+        if len(embeds) == 0:
+            await ctx.respond(content="Nenhum dado? Que estranho.")
+        elif len(embeds) == 1:
             await ctx.respond(embed=embeds[0])
         else:
             paginator = pages.Paginator(
@@ -303,7 +307,9 @@ async def lista(ctx: discord.ApplicationContext):
     await ctx.defer()
 
     a_pages = await get_all_parcels_embeds(us, ctx)
-    if len(a_pages) == 1:
+    if len(a_pages) == 0:
+        await ctx.respond(content="Nenhuma encomenda encontrada! Você pode adicionar uma nova com `/adicionar`", view=DeleteMessageView())
+    elif len(a_pages) == 1:
         await ctx.respond(embed=a_pages[0], view=DeleteMessageView())
     else:
         page_buttons = [
