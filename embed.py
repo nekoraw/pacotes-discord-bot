@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 import math
@@ -128,7 +129,7 @@ def create_package_embeds(
             return [embed]
 
 
-async def get_all_parcels_embeds(us: User, ctx: discord.ApplicationContext):
+async def get_all_parcels_embeds(us: User, ctx: discord.ApplicationContext, mostrar_entregues: bool = True):
     n_pages = math.ceil(len(us.parcels.items()) / parcels_per_page)
     list_pages = []
     for page in range(n_pages):
@@ -142,10 +143,7 @@ async def get_all_parcels_embeds(us: User, ctx: discord.ApplicationContext):
             if name is not None:
                 username = name
                 break
-        embed = discord.Embed(
-            color=discord.Color.from_rgb(255, 212, 0),
-            title=f"Encomendas de {username}",
-        )
+        embed = discord.Embed(color=discord.Color.from_rgb(255, 212, 0), title=f"Encomendas de {username}")
 
         embed.set_thumbnail(url=ctx.user.avatar.url)
 
@@ -155,13 +153,28 @@ async def get_all_parcels_embeds(us: User, ctx: discord.ApplicationContext):
             icon_url="https://rastreamento.correios.com.br/static/rastreamento-internet/imgs/receber-encomenda-cor.png",
         )
 
-        for parcel_name, parcel_uid in list(us.parcels.items())[
-            parcels_per_page * page : (parcels_per_page * page) + parcels_per_page
-        ]:
-            parcel = await Parcel.find(Parcel.internal_id == parcel_uid).first_or_none()
+        if mostrar_entregues:
+            list_parcels = [
+                asyncio.create_task(
+                    Parcel.find(
+                        {"$and": [{"internal_id": parcel_uid}, {"is_delivered": not mostrar_entregues}]}
+                    ).first_or_none()
+                )
+                for parcel_uid in list(us.parcels.values())
+            ]
+        else:
+            list_parcels = [
+                asyncio.create_task(Parcel.find({"internal_id": parcel_uid}).first_or_none())
+                for parcel_uid in list(us.parcels.values())
+            ]
+
+        list_parcels = await asyncio.gather(*list_parcels)
+
+        for parcel in list_parcels[parcels_per_page * page : (parcels_per_page * page) + parcels_per_page]:
             match parcel.service:
                 case Service.CORREIOS:
                     await parcel.update_parcel()
+                    parcel_name = us.get_parcel_name(parcel=parcel)
                     if "eventos" not in parcel.data:
                         if us.mostrar_rastreio:
                             embed.add_field(

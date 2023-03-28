@@ -302,13 +302,28 @@ async def nao_mostrar_codigo_rastreio(ctx: discord.ApplicationContext):
 
 
 @client.slash_command(description="Mostra todas as encomendas que você possui.")
-async def lista(ctx: discord.ApplicationContext):
+@discord.option(
+    "mostrar_entregues",
+    str,
+    choices=["Sim", "Não"],
+    default="Sim",
+    description="Irá mostrar os pacotes entregues na lista.",
+)
+async def lista(ctx: discord.ApplicationContext, mostrar_entregues):
     us = await User.get_user(ctx.user.id)
     await ctx.defer()
 
-    a_pages = await get_all_parcels_embeds(us, ctx)
+    if mostrar_entregues == "Sim":
+        mostrar_entregues = True
+    else:
+        mostrar_entregues = False
+
+    a_pages = await get_all_parcels_embeds(us, ctx, mostrar_entregues)
     if len(a_pages) == 0:
-        await ctx.respond(content="Nenhuma encomenda encontrada! Você pode adicionar uma nova com `/adicionar`", view=DeleteMessageView())
+        await ctx.respond(
+            content="Nenhuma encomenda encontrada! Você pode adicionar uma nova com `/adicionar`",
+            view=DeleteMessageView(),
+        )
     elif len(a_pages) == 1:
         await ctx.respond(embed=a_pages[0], view=DeleteMessageView())
     else:
