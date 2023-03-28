@@ -83,7 +83,7 @@ async def add_emojis(client: discord.Bot):
     logging.info("\nSelecione um servidor para adicionar os emojis:")
     logging.info(f"São necessários {n_emojis} para o funcionamento completo do bot.")
     for i, guild in enumerate(available_guilds):
-        logging.info(f"\n[{i}] - {guild.name} | {len(guild.emojis)}/{guild.emoji_limit} emojis")
+        logging.info(f"[{i}] - {guild.name} | {len(guild.emojis)}/{guild.emoji_limit} emojis")
 
     while True:
         logging.info("\nSelecione o ID do servidor: ")
