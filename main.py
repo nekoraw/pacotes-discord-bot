@@ -183,10 +183,6 @@ async def adiciona(ctx: discord.ApplicationContext, nome, codigo):
         await ctx.respond("Pacote já adicionado anteriormente.")
         return
 
-    if parcel.is_delivered:
-        await ctx.respond("Pacote já entregue. Não será adicionado.")
-        return
-
     if ctx.user.id not in parcel.list_users:
         parcel.list_users.append(ctx.user.id)
     await parcel.save()
