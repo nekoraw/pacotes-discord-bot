@@ -160,9 +160,9 @@ async def get_all_parcels_embeds(us: User, ctx: discord.ApplicationContext, most
             ]
         else:
             list_parcels = [
-                    await Parcel.find(
-                        {"$and": [{"internal_id": parcel_uid}, {"is_delivered": mostrar_entregues}]}
-                    ).first_or_none()
+                await Parcel.find(
+                    {"$and": [{"internal_id": parcel_uid}, {"is_delivered": mostrar_entregues}]}
+                ).first_or_none()
                 for parcel_uid in list(us.parcels.values())
             ]
 

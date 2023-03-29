@@ -80,14 +80,18 @@ async def notify_users(parcel: Parcel, n_events: int, is_deletion: bool = False)
             try:
                 user_client = await client.fetch_user(user.discord_id)
             except discord.NotFound:
-                logging.debug(f"Tried to update {user.discord_id} about deletion of package {parcel.tracking_code.upper()}, but it wasn't found.")
+                logging.debug(
+                    f"Tried to update {user.discord_id} about deletion of package {parcel.tracking_code.upper()}, but it wasn't found."
+                )
                 continue
 
             try:
                 await user_client.send(content=text)
                 logging.debug(f"Updated {user.discord_id} about deletion of package {parcel.tracking_code.upper()}.")
             except discord.Forbidden:
-                logging.debug(f"Tried to update {user.discord_id} about deletion of package {parcel.tracking_code.upper()}, but had no permission to do so.")
+                logging.debug(
+                    f"Tried to update {user.discord_id} about deletion of package {parcel.tracking_code.upper()}, but had no permission to do so."
+                )
             continue
 
         embeds = create_package_embeds(parcel, n_events, user.mostrar_rastreio, all_in_one_page=True)

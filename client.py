@@ -128,7 +128,5 @@ async def add_emojis(client: discord.Bot):
     with open("emojis.json", "w") as f:
         json.dump(created_emojis, f, indent=4)
 
-    logging.info(
-        "Emojis adicionados. Você pode omitir o argumento `emojis` na próxima vez que abrir o bot."
-    )
+    logging.info("Emojis adicionados. Você pode omitir o argumento `emojis` na próxima vez que abrir o bot.")
     logging.warning("Os emojis serão exibidos somente após a próxima inicialização do bot.")
