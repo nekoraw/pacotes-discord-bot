@@ -1,11 +1,15 @@
 import logging
+import os
 from datetime import datetime, timedelta
 from uuid import uuid4
 
 from beanie import Document, Indexed
+from dotenv import load_dotenv
 
 from schema.services import Service
 from rastreio import CorreiosAPI
+load_dotenv()
+days_to_track = int(os.getenv("DAYS_TO_TRACK_BEFORE_DELETION"))
 
 
 class Parcel(Document):
@@ -29,6 +33,11 @@ class Parcel(Document):
         await self.update_parcel()
         diff = self.n_updates - n_updates_before
         if diff <= 0:
+            if self.n_updates == 0 and (datetime.utcnow() - datetime.fromisoformat(self.last_update)) > timedelta(days=days_to_track):
+                logging.debug(f"Parcel {self.tracking_code.upper()} had no updates in a while. Deleting it.")
+                await notify_users(self, diff, is_deletion=True)
+                await self.delete()
+                return
             logging.debug(f"No new updates for {self.tracking_code.upper()}.")
             return
         await notify_users(self, diff)

@@ -48,6 +48,7 @@ DATABASE_NAME=pacotes_discord_bot
 UPDATE_DELAY_MINUTES=5
 PARCELS_PER_PAGE=5
 UPDATES_PER_PAGE=5
+DAYS_TO_TRACK_BEFORE_DELETION=14
 ```
 Você deverá mudar o `DISCORD_TOKEN` para o token do seu bot, assim como o `MONGODB_CONNECTION_URI` caso necessário.
 

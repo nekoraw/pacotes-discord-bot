@@ -3,6 +3,8 @@ import logging
 import os
 from datetime import datetime
 import traceback
+
+import discord
 from dotenv import load_dotenv
 
 from client import DiscordClient
@@ -63,7 +65,7 @@ class ParcelChecking:
             logging.debug(f"Finished update cycle. Will sleep for {remaining_time} seconds.")
 
 
-async def notify_users(parcel: Parcel, n_events: int):
+async def notify_users(parcel: Parcel, n_events: int, is_deletion: bool = False):
     client = DiscordClient.instance()
     list_users = parcel.list_users
     logging.debug(f"Will update the users {list_users} about {parcel.tracking_code.upper()}.")
@@ -71,6 +73,21 @@ async def notify_users(parcel: Parcel, n_events: int):
     list_calls = []
     for user in list_users:
         if user is None:
+            continue
+
+        if is_deletion:
+            text = f"<@{user.discord_id}>, o seu pacote **{user.get_parcel_name(parcel)}** - ||{parcel.tracking_code.upper()}|| foi deletado devido a inatividade."
+            try:
+                user_client = await client.fetch_user(user.discord_id)
+            except discord.NotFound:
+                logging.debug(f"Tried to update {user.discord_id} about deletion of package {parcel.tracking_code.upper()}, but it wasn't found.")
+                continue
+
+            try:
+                await user_client.send(content=text)
+                logging.debug(f"Updated {user.discord_id} about deletion of package {parcel.tracking_code.upper()}.")
+            except discord.Forbidden:
+                logging.debug(f"Tried to update {user.discord_id} about deletion of package {parcel.tracking_code.upper()}, but had no permission to do so.")
             continue
 
         embeds = create_package_embeds(parcel, n_events, user.mostrar_rastreio, all_in_one_page=True)
