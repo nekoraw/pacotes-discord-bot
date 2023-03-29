@@ -80,13 +80,13 @@ async def add_emojis(client: discord.Bot):
         if guild.emoji_limit - len(guild.emojis) >= n_emojis:
             available_guilds.append(guild)
 
-    logging.info("\nSelecione um servidor para adicionar os emojis:")
+    logging.info("Selecione um servidor para adicionar os emojis:")
     logging.info(f"São necessários {n_emojis} para o funcionamento completo do bot.")
     for i, guild in enumerate(available_guilds):
         logging.info(f"[{i}] - {guild.name} | {len(guild.emojis)}/{guild.emoji_limit} emojis")
 
     while True:
-        logging.info("\nSelecione o ID do servidor: ")
+        logging.info("Selecione o ID do servidor: ")
         server_index = input()
         try:
             selected_guild = available_guilds[int(server_index)]
@@ -129,5 +129,6 @@ async def add_emojis(client: discord.Bot):
         json.dump(created_emojis, f, indent=4)
 
     logging.info(
-        "Emojis adicionados. O bot continuará normalmente. Você pode omitir o argumento `emojis` na próxima vez que abrir o bot."
+        "Emojis adicionados. Você pode omitir o argumento `emojis` na próxima vez que abrir o bot."
     )
+    logging.warning("Os emojis serão exibidos somente após a próxima inicialização do bot.")
