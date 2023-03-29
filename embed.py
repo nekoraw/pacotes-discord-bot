@@ -155,22 +155,24 @@ async def get_all_parcels_embeds(us: User, ctx: discord.ApplicationContext, most
 
         if mostrar_entregues:
             list_parcels = [
-                asyncio.create_task(
-                    Parcel.find(
-                        {"$and": [{"internal_id": parcel_uid}, {"is_delivered": not mostrar_entregues}]}
-                    ).first_or_none()
-                )
+                await Parcel.find({"internal_id": parcel_uid}).first_or_none()
                 for parcel_uid in list(us.parcels.values())
             ]
         else:
             list_parcels = [
-                asyncio.create_task(Parcel.find({"internal_id": parcel_uid}).first_or_none())
+                    await Parcel.find(
+                        {"$and": [{"internal_id": parcel_uid}, {"is_delivered": mostrar_entregues}]}
+                    ).first_or_none()
                 for parcel_uid in list(us.parcels.values())
             ]
 
-        list_parcels = await asyncio.gather(*list_parcels)
+        available_parcels = []
+        for parcel in list_parcels:
+            if parcel is None:
+                continue
+            available_parcels.append(parcel)
 
-        for parcel in list_parcels[parcels_per_page * page : (parcels_per_page * page) + parcels_per_page]:
+        for parcel in available_parcels[parcels_per_page * page : (parcels_per_page * page) + parcels_per_page]:
             match parcel.service:
                 case Service.CORREIOS:
                     await parcel.update_parcel()
