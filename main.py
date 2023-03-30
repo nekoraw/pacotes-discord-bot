@@ -48,8 +48,8 @@ async def on_ready() -> None:
                 logging.warning("Emojis já adicionados. Delete emojis.json caso quiser reconfigurar os emojis.")
             else:
                 await add_emojis(client)
-    parcel_autocheck = ParcelChecking()
-    await parcel_autocheck.main_loop()
+    parcel_autocheck = ParcelChecking().instance()
+    await parcel_autocheck.start_loop()
 
 
 @client.event
