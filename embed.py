@@ -160,7 +160,7 @@ async def get_all_parcels_embeds(us: User, ctx: discord.ApplicationContext, most
                 for parcel_uid in list(us.parcels.values())
             ]
 
-        footer_text = f"Somente uma encomenda." if len(us.parcels) == 1 else f"Total de {len(us.list_parcels)} encomendas."
+        footer_text = f"Somente uma encomenda." if len(us.parcels) == 1 else f"Total de {len(list_parcels)} encomendas."
         embed.set_footer(
             text=footer_text,
             icon_url="https://rastreamento.correios.com.br/static/rastreamento-internet/imgs/receber-encomenda-cor.png",
