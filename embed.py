@@ -176,7 +176,8 @@ async def get_all_parcels_embeds(us: User, ctx: discord.ApplicationContext, most
         for parcel in available_parcels[parcels_per_page * page : (parcels_per_page * page) + parcels_per_page]:
             match parcel.service:
                 case Service.CORREIOS:
-                    await parcel.update_parcel()
+                    if not parcel.is_delivered:
+                        await parcel.update_parcel()
                     parcel_name = us.get_parcel_name(parcel=parcel)
                     if "eventos" not in parcel.data:
                         if us.mostrar_rastreio:
