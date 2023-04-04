@@ -68,6 +68,7 @@ all_emojis = {
     "caminhao-cor.png": "caminhaocor",
     "fatura-paga.png": "faturapaga",
     "devolucao-encomenda-cor.png": "devolucaoencomendacor",
+    "logistica-reversa-cor.png": "logisticareversacor",
     "not_found": "misterio",
 }
 
@@ -109,6 +110,7 @@ async def add_emojis(client: discord.Bot):
         "caminhao-cor.png": "",
         "fatura-paga.png": "",
         "devolucao-encomenda-cor.png": "",
+        "logistica-reversa-cor.png": "",
         "not_found": "",
     }
     for emoji, name in all_emojis.items():
@@ -122,7 +124,7 @@ async def add_emojis(client: discord.Bot):
         response = await session.get(url=icon_url)
         data = await response.read()
         added_emoji = await selected_guild.create_custom_emoji(name=name, image=data)
-        created_emojis[emoji] = f"<:{name}:{added_emoji.id}>"
+        created_emojis[emoji] = f"<:{added_emoji.name}:{added_emoji.id}>"
 
     await session.close()
     with open("emojis.json", "w") as f:
