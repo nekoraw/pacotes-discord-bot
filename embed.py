@@ -147,12 +147,6 @@ async def get_all_parcels_embeds(us: User, ctx: discord.ApplicationContext, most
 
         embed.set_thumbnail(url=ctx.user.avatar.url)
 
-        footer_text = f"Somente uma encomenda." if len(us.parcels) == 1 else f"Total de {len(us.parcels)} encomendas."
-        embed.set_footer(
-            text=footer_text,
-            icon_url="https://rastreamento.correios.com.br/static/rastreamento-internet/imgs/receber-encomenda-cor.png",
-        )
-
         if mostrar_entregues:
             list_parcels = [
                 await Parcel.find({"internal_id": parcel_uid}).first_or_none()
@@ -165,6 +159,12 @@ async def get_all_parcels_embeds(us: User, ctx: discord.ApplicationContext, most
                 ).first_or_none()
                 for parcel_uid in list(us.parcels.values())
             ]
+
+        footer_text = f"Somente uma encomenda." if len(us.parcels) == 1 else f"Total de {len(us.list_parcels)} encomendas."
+        embed.set_footer(
+            text=footer_text,
+            icon_url="https://rastreamento.correios.com.br/static/rastreamento-internet/imgs/receber-encomenda-cor.png",
+        )
 
         available_parcels = []
         for parcel in list_parcels:

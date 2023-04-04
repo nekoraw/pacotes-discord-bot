@@ -302,7 +302,7 @@ async def nao_mostrar_codigo_rastreio(ctx: discord.ApplicationContext):
     "mostrar_entregues",
     str,
     choices=["Sim", "Não"],
-    default="Sim",
+    default="Não",
     description="Irá mostrar os pacotes entregues na lista.",
 )
 async def lista(ctx: discord.ApplicationContext, mostrar_entregues):
