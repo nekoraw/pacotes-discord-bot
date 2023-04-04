@@ -69,6 +69,7 @@ all_emojis = {
     "fatura-paga.png": "faturapaga",
     "devolucao-encomenda-cor.png": "devolucaoencomendacor",
     "logistica-reversa-cor.png": "logisticareversacor",
+    "cdd-cor.png": "cddcor",
     "not_found": "misterio",
 }
 
@@ -111,6 +112,7 @@ async def add_emojis(client: discord.Bot):
         "fatura-paga.png": "",
         "devolucao-encomenda-cor.png": "",
         "logistica-reversa-cor.png": "",
+        "cdd-cor.png": "",
         "not_found": "",
     }
     for emoji, name in all_emojis.items():
