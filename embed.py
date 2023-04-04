@@ -160,17 +160,18 @@ async def get_all_parcels_embeds(us: User, ctx: discord.ApplicationContext, most
                 for parcel_uid in list(us.parcels.values())
             ]
 
-        footer_text = f"Somente uma encomenda." if len(us.parcels) == 1 else f"Total de {len(list_parcels)} encomendas."
-        embed.set_footer(
-            text=footer_text,
-            icon_url="https://rastreamento.correios.com.br/static/rastreamento-internet/imgs/receber-encomenda-cor.png",
-        )
 
         available_parcels = []
         for parcel in list_parcels:
             if parcel is None:
                 continue
             available_parcels.append(parcel)
+
+        footer_text = f"Somente uma encomenda." if len(available_parcels) == 1 else f"Total de {len(available_parcels)} encomendas."
+        embed.set_footer(
+            text=footer_text,
+            icon_url="https://rastreamento.correios.com.br/static/rastreamento-internet/imgs/receber-encomenda-cor.png",
+        )
 
         for parcel in available_parcels[parcels_per_page * page : (parcels_per_page * page) + parcels_per_page]:
             match parcel.service:
