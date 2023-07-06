@@ -30,7 +30,7 @@ class CorreiosAPI:
 
         response = await self.client.request(
             "POST",
-            "https://proxyapp.correios.com.br/v1/app-validation",
+            "https://proxyapp.correios.com.br/v2/app-validation",
             headers={"content-type": "application/json", "user-agent": "Dart/3.0 (dart:io)"},
             json={"requestToken": REQUEST_TOKEN, "data": request_date, "sign": request_sign},
         )
