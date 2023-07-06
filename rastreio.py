@@ -26,7 +26,7 @@ class CorreiosAPI:
                 return self.token
 
         request_date = (datetime.utcnow() - timedelta(hours=3)).strftime("%d/%m/%Y %H:%M:%S")
-        request_sign = hashlib.md5(f"requestToken{REQUEST_TOKEN}data{REQUEST_DATE}".encode('ascii')).hexdigest()
+        request_sign = hashlib.md5(f"requestToken{REQUEST_TOKEN}data{request_date}".encode('ascii')).hexdigest()
 
         response = await self.client.request(
             "POST",
