@@ -1,11 +1,9 @@
 import logging
-
+import hashlib
 import aiohttp
 from datetime import datetime, timedelta
 
-REQUEST_TOKEN = (
-    "YW5kcm9pZDtici5jb20uY29ycmVpb3MucHJlYXRlbmRpbWVudG87RjMyRTI5OTc2NzA5MzU5ODU5RTBCOTdGNkY4QTQ4M0I5Qjk1MzU3OA=="
-)
+REQUEST_TOKEN = "YW5kcm9pZDtici5jb20uY29ycmVpb3MucHJlYXRlbmRpbWVudG87RjMyRTI5OTc2NzA5MzU5ODU5RTBCOTdGNkY4QTQ4M0I5Qjk1MzU3OA=="
 
 
 class CorreiosAPI:
@@ -27,11 +25,14 @@ class CorreiosAPI:
             if datetime.utcnow().replace(tzinfo=None) - self.last_update < timedelta(minutes=2):
                 return self.token
 
+        request_date = (datetime.utcnow() - timedelta(hours=3)).strftime("%d/%m/%Y %H:%M:%S")
+        request_sign = hashlib.md5(f"requestToken{REQUEST_TOKEN}data{REQUEST_DATE}".encode('ascii')).hexdigest()
+
         response = await self.client.request(
             "POST",
             "https://proxyapp.correios.com.br/v1/app-validation",
-            headers={"content-type": "application/json", "user-agent": "Dart/2.18 (dart:io)"},
-            json={"requestToken": REQUEST_TOKEN},
+            headers={"content-type": "application/json", "user-agent": "Dart/3.0 (dart:io)"},
+            json={"requestToken": REQUEST_TOKEN, "data": request_date, "sign": request_sign},
         )
 
         if response.status != 201:
