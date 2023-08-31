@@ -3,7 +3,7 @@ import hashlib
 import aiohttp
 from datetime import datetime, timedelta
 
-REQUEST_TOKEN = "YW5kcm9pZDtici5jb20uY29ycmVpb3MucHJlYXRlbmRpbWVudG87RjMyRTI5OTc2NzA5MzU5ODU5RTBCOTdGNkY4QTQ4M0I5Qjk1MzU3ODs1LjEuMTQ="
+REQUEST_TOKEN = "Aru8f+R6u00wQgU0nZ7AZg0vpvXTfB+e7w00jf+OkHbgQDwHUpVvhdIzf7BdYSGxQdwlcefRusOvAkLpMFXFwA0ujoHrN82I2hxVumUQELmCEbu47jqa916P2mmIcmMC4rMwY8ihFAnOjnrEdLaLnRceOdxzwcIsGKEeXpJ6S0mVYHP/t6eU9EsOGRxJTEf4jl6oEEMwgfqf7nSkuy+NX/CTvNz0jm1aMsz4NkAqjtaMegE/K2pMTBGLt3CD01gHhylz1bKjNUUmgUhFlBNDD40qBPvUS+sVtt29GJTJj5n+S9ny5BpUE2fkHwwKub7Oz0ummldKEVGx0zYq1KP86w=="
 
 
 class CorreiosAPI:
@@ -30,13 +30,13 @@ class CorreiosAPI:
 
         response = await self.client.request(
             "POST",
-            "https://proxyapp.correios.com.br/v2/app-validation",
+            "https://proxyapp.correios.com.br/v3/app-validation",
             headers={"content-type": "application/json", "user-agent": "Dart/3.0 (dart:io)"},
             json={"requestToken": REQUEST_TOKEN, "data": request_date, "sign": request_sign},
         )
 
         if response.status != 201:
-            logging.error(f"Algo deu errado na requisição dos Correios:\n{response.status}: {response.content}")
+            logging.error(f"Algo deu errado na requisição dos Correios:\n{response.status}: {await response.content.read()}")
             return None
 
         self.token = (await response.json()).get("token", None)
